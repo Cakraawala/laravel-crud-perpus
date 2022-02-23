@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -40,16 +39,6 @@ class AdminController extends Controller
         return [
             'success' => $success
         ];
-    }
-
-    public function show(Admin $id)
-    {
-        try {
-            $item = $this->model->with('books')->findOrFail($id);
-            return response(['data' => $item, 'status' => 200]);
-        } catch (ModelNotFoundException $e) {
-            return response(['message' => 'Item Not Found!', 'status' => 404]);
-        }
     }
 
     public function destroy(Admin $id){

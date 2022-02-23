@@ -50,7 +50,7 @@ Route::put('/users/{id}',  [UserController::class, 'update']);
 Route::delete('/users/{id}',[UserController::class, 'destroy']);
 
 Route::get('/admins', [AdminController::class, 'index']);
-Route::get('/admins/{id}', [AdminController::class, 'index']);
+Route::get('/admins/{id}', [AdminController::class, 'show']);
 Route::post('/admins', [AdminController::class, 'store']);
 Route::put('/admins/{id}',  [AdminController::class, 'update']);
 Route::delete('/admins/{id}',[AdminController::class, 'destroy']);
