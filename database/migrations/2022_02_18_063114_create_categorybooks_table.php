@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('categorybook', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nama_kategori');
+            $table->string('nama_kategori')->unique();
             $table->timestamps();
         });
     }

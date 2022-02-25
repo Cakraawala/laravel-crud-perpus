@@ -9,5 +9,6 @@ class TransaksiPinjam extends Model
 {
     use HasFactory;
     protected $table = 'transaksi_pinjam';
-    protected $guarded = ['id'];
+    protected $fillable = ['user_id', 'databook_id', 'jumlah','tanggal_pinjam' ,
+    'tanggal kembali','status', 'admin_id'];
 }

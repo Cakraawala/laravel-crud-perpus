@@ -2,71 +2,67 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
 
-    public function index(){
-        return  User::all();
+    protected $frog;
+
+    public function __construct(User $user)
+    {
+        $this->frog = $user;
     }
-    public function store (){
-        request()->validate([
+
+    public function index(){
+        $user = $this->frog->get();
+        return response()->json(['List Data' => 'User', 'data'=>$user]);
+    }
+
+    public function store (Request $request){
+        $request->validate([
             'nama_anggota' => 'required',
             'user_anggota' => ['required', 'min:3', 'max:255', 'unique:user'],
-            'no_induk' => 'required',
+            'no_induk' => 'required|min:3|max:12',
             'jenis_kelamin' => ['required','in:Pria,Wanita'],
             'no_telp' => ['required', 'max:15'],
             'alamat' => ['required','max:255'],
             'email' => ['required', 'email:dns', 'unique:user'],
             'password' => ['required', 'min:5', 'max:255']
         ]);
-        return User::create([
-            'nama_anggota' => request('nama_anggota'),
-            'user_anggota' => request('user_anggota'),
-            'no_induk' => request('no_induk'),
-            'no_telp' => request('no_telp'),
-            'alamat' => request('alamat'),
-            'jenis_kelamin' =>request('jenis_kelamin'),
-            'email' => request('email'),
-            'password'=> request('password')
-        ]);
+        $this->frog->create($request->all());
+        return $this->index();
     }
 
-    public function update (User $id){
-        request()->validate([
-            'nama_anggota' => 'required',
-            'user_anggota' => 'required',
-            'no_induk' => 'required',
-            'jenis_kelamin' => ['required','in:Pria,Wanita'],
-            'no_telp' => ['required', 'max:15'],
-            'alamat' => ['required','max:255'],
-            'email' => ['required','string', 'email', 'max:255','unique:id'],
-            'password' => ['required', 'string', 'min:5', 'confirmed']
-
-        ]);
-
-        $success = $id->update([
-            'nama_anggota' => request('nama_anggota'),
-            'user_anggota' => request('user_anggota'),
-            'no_induk' => request('no_induk'),
-            'no_telp' => request('no_telp'),
-            'alamat' => request('alamat'),
-            'jenis_kelamin' =>request('jenis_kelamin'),
-            'email' => request('email'),
-            'password'=> request('password')
-        ]);
-
-        return [
-            'success' => $success
-        ];
+    public function update (Request $request, $id){
+        try {
+            $data = $this->frog->findOrFail($id);
+            $data->update($request->all());
+            return response()->json(['Message' => 'Data edited successfully', 'data' => $data]);
+        }catch (ModelNotFoundException){
+            return response()->json(['Error' => '404', 'Message' => 'Item not found or not created yet!']);
+        }
     }
 
-    public function destroy(User $id){
-        $success = $id->delete();
-
-        return [
-            'success' => $success
-        ];
+    public function destroy($id){
+        try{
+            $data = $this->frog->findOrFail($id);
+            $data->delete();
+            return response()->json([
+                'Message' => 'Data Successfully deleted'
+            ]);
+        } catch (ModelNotFoundException) {
+            return response()->json(['Error' => '404','Message' => 'Item not found or not created yet!']);
+        }
     }
+    public function show($id){
+        try{
+            $data = $this->frog->findOrFail($id);
+            return response(['List Data' => $data]);
+        } catch (ModelNotFoundException) {
+            return response()->json(['Error' => '404', 'Message' => 'Item not found or not created yet!']);
+        }
+    }
+
 }

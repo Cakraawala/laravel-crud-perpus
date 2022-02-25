@@ -3,51 +3,65 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    protected $frog;
+
+    public function __construct(Admin $admin)
+    {
+        $this->frog = $admin;
+    }
+
     public function index(){
-        return  Admin::all();
+        $admins = $this->frog->get();
+        return response()->json(['List Data' => 'Admin',
+                        'data' => $admins]);
     }
-    public function store (){
-        request()->validate([
+
+
+    public function store (Request $request){
+        $request->validate([
             'nama' => 'required',
-            'user_admin' => 'required',
+            'user_admin' => 'required|unique:admin|min:3|max:255',
             'password' => 'required'
         ]);
-        return Admin::create([
-            'nama' => request('nama'),
-            'user_admin' => request('user_admin'),
-            'password' => request('password')
-        ]);
+        $this->frog->create($request->all());
+        return $this->index();
     }
 
-    public function update (Admin $id){
-        request()->validate([
-            'nama' => 'required',
-            'user_admin' => 'required',
-            'password' => 'required'
-        ]);
-
-        $success = $id->update([
-            'nama' => request('nama'),
-            'user_admin' => request('user_admin'),
-            'password' => request('password')
-        ]);
-
-        return [
-            'success' => $success
-        ];
+    public function update ($id, Request $request){
+        try {
+            $data = $this->frog->findOrFail($id);
+            $data->update($request->all());
+            return response()->json(['Message' => 'Data edited successfully', 'data' => $data]);
+        }catch (ModelNotFoundException){
+            return response()->json(['Error' => '404', 'Message' => 'Item not found or not created yet!']);
+        }
     }
 
-    public function destroy(Admin $id){
-        $success = $id->delete();
-
-        return [
-            'success' => $success
-        ];
+    public function destroy($id){
+        try{
+            $data = $this->frog->findOrFail($id);
+            $data->delete();
+            return response()->json([
+                'Message' => 'Data Successfully deleted'
+            ]);
+        } catch (ModelNotFoundException) {
+            return response()->json(['Error' => '404','Message' => 'Item not found or not created yet!']);
+        }
     }
+
+    public function show($id){
+        try{
+            $data = $this->frog->findOrFail($id);
+            return response(['List Data' => $data]);
+        } catch (ModelNotFoundException) {
+            return response()->json(['Error' => '404', 'Message' => 'Item not found or not created yet!']);
+        }
+    }
+
 
 }
-

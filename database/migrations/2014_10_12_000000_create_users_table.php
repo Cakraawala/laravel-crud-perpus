@@ -17,9 +17,9 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('nama_anggota');
             $table->string('user_anggota')->unique();
-            $table->bigInteger('no_induk');
+            $table->string('no_induk')->unique();
             $table->enum('jenis_kelamin', ['Pria', 'Wanita']);
-            $table->bigInteger('no_telp')->unique();
+            $table->string('no_telp')->unique();
             $table->string('alamat');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

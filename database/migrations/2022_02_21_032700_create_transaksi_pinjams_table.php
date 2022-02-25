@@ -22,8 +22,8 @@ return new class extends Migration
             $table->unsignedBigInteger('admin_id')->index();
             $table->foreign('admin_id')->references('id')->on('admin');
             $table->integer('jumlah');
-            $table->dateTime('tanggal_pinjam')->nullable();
-            $table->dateTime('tanggal_kembali')->nullable();
+            $table->dateTime('tanggal_pinjam')->default(now());
+            $table->dateTime('tanggal_kembali');
             $table->string('status');
             $table->timestamps();
         });
