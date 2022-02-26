@@ -17,7 +17,8 @@ class DatabookController extends Controller
     }
 
     public function index(){
-        $databook = $this->frog->with('categorybook', 'penerbit')->get();
+        $databook = $this->frog->with('categorybook',
+        'penerbit')->get();
         return response()->json(['List Data' => 'Databook', 'Data' => $databook]);
     }
 
@@ -37,32 +38,39 @@ class DatabookController extends Controller
 
     public function update (Request $request, $id){
         try {
-            $data = $this->frog->with('categorybook', 'penerbit')->findOrFail($id);
+            $data = $this->frog->with('categorybook',
+            'penerbit')->findOrFail($id);
             $data->update($request->all());
-            return response()->json(['Message' => 'Data edited successfully', 'data' => $data]);
+            return response()->json(['Message' =>
+            'Data edited successfully', 'data' => $data]);
         }catch (ModelNotFoundException){
-            return response()->json(['Error' => '404', 'Message' => 'Item not found or not created yet!']);
+            return response()->json(['Error' => '404',
+            'Message' => 'Item not found or not created yet!']);
         }
     }
 
     public function show($id){
         try{
-            $data = $this->frog->with('categorybook','penerbit')->findOrFail($id);
+            $data = $this->frog->with('categorybook',
+            'penerbit')->findOrFail($id);
             return response(['List Data' => $data]);
         } catch (ModelNotFoundException) {
-            return response()->json(['Error' => '404', 'Message' => 'Item not found or not created yet!']);
+            return response()->json(['Error' => '404',
+            'Message' => 'Item not found or not created yet!']);
         }
     }
 
     public function destroy($id){
         try {
-            $data = $this->frog->with('categorybook','penerbit')->findOrFail($id);
+            $data = $this->frog->with('categorybook',
+            'penerbit')->findOrFail($id);
             $data->category()->detach();
             $data->penerbit()->detach();
             $data->delete();
             return $this->index();
         }catch (ModelNotFoundException){
-            return response(['Error' => '404', 'Message' => 'Item not found or not created yet!']);
+            return response(['Error' => '404',
+            'Message' => 'Item not found or not created yet!']);
         }
     }
 }

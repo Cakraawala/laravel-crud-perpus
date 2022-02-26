@@ -9,6 +9,18 @@ class TransaksiPinjam extends Model
 {
     use HasFactory;
     protected $table = 'transaksi_pinjam';
-    protected $fillable = ['user_id', 'databook_id', 'jumlah','tanggal_pinjam' ,
-    'tanggal kembali','status', 'admin_id'];
+    protected $guarded = ['id'];
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function databook(){
+        return $this->belongsTo(Databook::class, 'databook_id');
+    }
+
+    public function admin(){
+        return $this->belongsTo(Admin::class, 'admin_id');
+    }
+
 }
